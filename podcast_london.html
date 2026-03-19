@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>London Calling — El Podcast</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fog:    '#e8e4df',
+            amber:  { DEFAULT: '#c8832a', light: '#e8a84a', pale: '#f5deb3' },
+            teal:   { DEFAULT: '#2a7f7f', light: '#3aa8a8', pale: '#a8d8d8' },
+            slate:  { 900: '#0d1117', 800: '#161b22', 700: '#21262d', 600: '#30363d', 500: '#484f58' },
+            ink:    '#1a1a2e',
+          },
+          fontFamily: {
+            display: ['Playfair Display', 'Georgia', 'serif'],
+            body:    ['Crimson Pro', 'Georgia', 'serif'],
+            mono:    ['DM Mono', 'monospace'],
+          },
+          backgroundImage: {
+            'noise': "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E\")",
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --amber: #c8832a;
+      --amber-light: #e8a84a;
+      --teal: #2a7f7f;
+      --teal-light: #3aa8a8;
+      --slate-900: #0d1117;
+      --slate-800: #161b22;
+      --slate-700: #21262d;
+      --fog: #e8e4df;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--slate-900); color: var(--fog); font-family: 'Crimson Pro', Georgia, serif; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--slate-900); }
+    ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* Audio player custom */
+    audio { width: 100%; accent-color: var(--teal-light); }
+    audio::-webkit-media-controls-panel { background: var(--slate-700); }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes leafFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33%       { transform: translateY(-8px) rotate(5deg); }
+      66%       { transform: translateY(4px) rotate(-3deg); }
+    }
+    .fade-up   { animation: fadeUp 0.7s ease forwards; }
+    .fade-in   { animation: fadeIn 0.9s ease forwards; }
+    .leaf-float { animation: leafFloat 6s ease-in-out infinite; }
+
+    .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+    .stagger-2 { animation-delay: 0.25s; opacity: 0; }
+    .stagger-3 { animation-delay: 0.4s; opacity: 0; }
+    .stagger-4 { animation-delay: 0.55s; opacity: 0; }
+    .stagger-5 { animation-delay: 0.7s; opacity: 0; }
+
+    /* Divider ornament */
+    .ornament::before, .ornament::after {
+      content: '—';
+      color: var(--amber);
+      margin: 0 0.5rem;
+      opacity: 0.7;
+    }
+
+    /* Episode card hover */
+    .ep-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(42,127,127,0.2);
+    }
+    .ep-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(42,127,127,0.15);
+      border-color: rgba(42,127,127,0.5);
+    }
+
+    /* Nav link */
+    .nav-link {
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--amber-light);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { color: var(--amber-light); }
+
+    /* Form inputs */
+    input, textarea, select {
+      background: var(--slate-700);
+      border: 1px solid rgba(42,127,127,0.3);
+      color: var(--fog);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--teal-light);
+      box-shadow: 0 0 0 3px rgba(58,168,168,0.1);
+    }
+    input::placeholder, textarea::placeholder { color: #484f58; }
+
+    /* Badge */
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 3px solid var(--amber);
+      padding-left: 1.5rem;
+      font-style: italic;
+    }
+
+    /* Timeline dot */
+    .timeline-dot {
+      width: 10px; height: 10px;
+      background: var(--teal-light);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(58,168,168,0.15);
+    }
+
+    /* Gradient text */
+    .grad-text {
+      background: linear-gradient(135deg, var(--amber-light), var(--teal-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Leaf decorations */
+    .leaf { display: inline-block; font-size: 1.2rem; }
+
+    /* Section fade-in on scroll (CSS only approximation) */
+    section { position: relative; }
+  </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useRef, useEffect } = React;
+
+/* ─── DATA ─── */
+const episodes = [
+  {
+    id: 1,
+    number: "E01",
+    title: "Llegada: El olor a lluvia y tubería",
+    date: "Septiembre 2024",
+    duration: "28 min",
+    description: "El avión aterriza en Heathrow y la ciudad ya huele diferente. En este primer episodio hablo de la llegada, el metro, el choque cultural y esa sensación inexplicable de sentirte en casa en un lugar que no conocías.",
+    tags: ["Llegada", "Heathrow", "Primeras impresiones"],
+    img: "https://images.unsplash.com/photo-1520986606214-8b456906c813?w=800&q=80",
+    color: "teal",
+    src: "mi_podcast_e01.mp3"
+  },
+  {
+    id: 2,
+    number: "E02",
+    title: "Barrios: De Notting Hill a Shoreditch",
+    date: "Septiembre 2024",
+    duration: "34 min",
+    description: "Londres no es una ciudad, es una colección de pueblos. Recorro Notting Hill con sus fachadas de colores pastel, la energía raw de Shoreditch, y me pierdo por Borough Market con un flat white en la mano.",
+    tags: ["Notting Hill", "Shoreditch", "Borough Market"],
+    img: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80",
+    color: "amber",
+    src: "mi_podcast_e02.mp3"
+  },
+  {
+    id: 3,
+    number: "E03",
+    title: "Otoño empieza: hojas doradas en Hyde Park",
+    date: "Septiembre 2024",
+    duration: "31 min",
+    description: "A finales de septiembre el verano cede. Los árboles de Hyde Park empiezan a encenderse en naranjas y ocres. Hablo de parques, de leer en un banco con frío, y de por qué Londres en otoño es la versión definitiva de la ciudad.",
+    tags: ["Hyde Park", "Otoño", "Naturaleza"],
+    img: "https://images.unsplash.com/photo-1543872084-c7bd3822856f?w=800&q=80",
+    color: "teal",
+    src: "mi_podcast_e03.mp3"
+  },
+  {
+    id: 4,
+    number: "E04",
+    title: "Pubs, gente y despedida",
+    date: "Septiembre 2024",
+    duration: "38 min",
+    description: "El pub inglés es una institución. En el último episodio hablo de las conversaciones con desconocidos, el arte de quedarse hasta closing time, y lo que sientes cuando el Eurostar sale de St. Pancras y te llevas un trozo de Londres contigo.",
+    tags: ["Pubs", "Cultura", "Despedida", "St. Pancras"],
+    img: "https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=800&q=80",
+    color: "amber",
+    src: "mi_podcast_e04.mp3"
+  }
+];
+
+const tools = [
+  { name: "Audacity", desc: "Grabación y edición de voz principal", icon: "🎙" },
+  { name: "Auto Duck", desc: "Sidechain de música bajo la voz", icon: "🦆" },
+  { name: "FFmpeg", desc: "Compresión y exportación a MP3", icon: "⚡" },
+  { name: "Rode NT-USB", desc: "Micrófono condensador de estudio", icon: "🎤" },
+  { name: "GarageBand", desc: "Mezcla final y mastering ligero", icon: "🎛" },
+  { name: "Freesound.org", desc: "Efectos de sonido CC0 — lluvia, metro", icon: "🎧" },
+];
+
+const processSteps = [
+  { step: "01", title: "Guión y estructura", desc: "Cada episodio parte de un guión ligero: puntos clave, anécdotas y cierres. No libreto completo — conversación fluida con dirección." },
+  { step: "02", title: "Grabación en Audacity", desc: "Micrófono externo, habitación alfombrada para reducir reverb. 44.1kHz, 16-bit WAV como formato fuente." },
+  { step: "03", title: "Reducción de ruido", desc: "Audacity Noise Reduction: perfil de 2 segundos de silencio ambiental, aplicado al 70%. Se eliminan clicks y breathing excesivo." },
+  { step: "04", title: "Música de fondo", desc: "Tracks CC de Bensound y Free Music Archive importados en segunda pista. Auto Duck baja la música 12dB cuando hay voz." },
+  { step: "05", title: "Intro y cierre", desc: "Intro: 8 segundos de ambiente de metro de Londres + tema musical fade in. Cierre: melodía completa con call-to-action." },
+  { step: "06", title: "Exportación MP3", desc: "FFmpeg: -b:a 160k -ar 44100. Metadatos ID3 completos con portada embebida. Peso final: ~35MB por episodio." },
+];
+
+/* ─── NAV ─── */
+function Nav({ active, setActive }) {
+  const [open, setOpen] = useState(false);
+  const links = [
+    { id: 'home', label: 'Inicio' },
+    { id: 'episodes', label: 'Episodios' },
+    { id: 'production', label: 'Producción' },
+    { id: 'contact', label: 'Participa' },
+  ];
+  return (
+    <nav style={{ background: 'rgba(13,17,23,0.92)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(42,127,127,0.2)' }}
+         className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+      <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <a href="#home" onClick={() => setActive('home')}
+           className="font-display text-xl tracking-tight" style={{ color: 'var(--fog)' }}>
+          <span style={{ color: 'var(--amber-light)' }}>London</span> Calling
+          <span className="badge ml-2 px-2 py-0.5 rounded" style={{ background: 'rgba(42,127,127,0.2)', color: 'var(--teal-light)' }}>
+            PODCAST
+          </span>
+        </a>
+        {/* Desktop */}
+        <div className="hidden md:flex gap-8">
+          {links.map(l => (
+            <a key={l.id} href={`#${l.id}`}
+               onClick={() => setActive(l.id)}
+               className="nav-link font-body text-base"
+               style={{ color: active === l.id ? 'var(--amber-light)' : 'rgba(232,228,223,0.7)', letterSpacing: '0.03em' }}>
+              {l.label}
+            </a>
+          ))}
+        </div>
+        {/* Mobile toggle */}
+        <button className="md:hidden text-2xl" onClick={() => setOpen(!open)}
+                style={{ color: 'var(--teal-light)' }}>
+          {open ? '✕' : '☰'}
+        </button>
+      </div>
+      {open && (
+        <div className="md:hidden flex flex-col gap-4 px-6 pt-4 pb-6" style={{ borderTop: '1px solid rgba(42,127,127,0.2)' }}>
+          {links.map(l => (
+            <a key={l.id} href={`#${l.id}`} onClick={() => { setActive(l.id); setOpen(false); }}
+               className="font-body text-lg" style={{ color: 'var(--fog)' }}>{l.label}</a>
+          ))}
+        </div>
+      )}
+    </nav>
+  );
+}
+
+/* ─── HERO ─── */
+function Hero() {
+  return (
+    <section id="home" className="relative min-h-screen flex flex-col justify-center overflow-hidden" style={{ paddingTop: '80px' }}>
+      {/* BG image */}
+      <div className="absolute inset-0" style={{
+        backgroundImage: "url('https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1600&q=80')",
+        backgroundSize: 'cover', backgroundPosition: 'center 40%',
+        filter: 'brightness(0.25) saturate(0.7)',
+      }} />
+      {/* Gradient overlay */}
+      <div className="absolute inset-0" style={{
+        background: 'linear-gradient(180deg, rgba(13,17,23,0.4) 0%, rgba(13,17,23,0.7) 50%, rgba(13,17,23,1) 100%)'
+      }} />
+      {/* Decorative leaves */}
+      <div className="absolute top-24 right-12 opacity-20 text-6xl leaf-float" style={{ animationDelay: '0s' }}>🍂</div>
+      <div className="absolute top-40 right-40 opacity-15 text-4xl leaf-float" style={{ animationDelay: '1.5s' }}>🍁</div>
+      <div className="absolute top-60 left-16 opacity-10 text-5xl leaf-float" style={{ animationDelay: '3s' }}>🍂</div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-20">
+        <div className="max-w-3xl">
+          {/* Kicker */}
+          <div className="fade-up stagger-1 flex items-center gap-3 mb-6">
+            <span className="badge px-3 py-1 rounded-full" style={{ background: 'rgba(200,131,42,0.2)', color: 'var(--amber-light)', border: '1px solid rgba(200,131,42,0.4)' }}>
+              ✦ TEMPORADA 1 — OTOÑO 2024
+            </span>
+            <span className="badge px-3 py-1 rounded-full" style={{ background: 'rgba(42,127,127,0.2)', color: 'var(--teal-light)', border: '1px solid rgba(42,127,127,0.4)' }}>
+              4 EPISODIOS
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1 className="fade-up stagger-2 font-display font-black leading-none mb-4"
+              style={{ fontSize: 'clamp(3.5rem, 10vw, 7rem)', color: 'var(--fog)' }}>
+            London<br />
+            <span className="italic" style={{ color: 'var(--amber-light)' }}>Calling</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="fade-up stagger-3 font-body text-xl leading-relaxed mb-8 max-w-2xl"
+             style={{ color: 'rgba(232,228,223,0.75)', fontSize: '1.25rem' }}>
+            Un viaje por Londres en el último suspiro del verano, cuando los árboles empiezan a arder y la ciudad huele a lluvia, café y tiempo libre. Cuatro episodios. Una ciudad. Una temporada.
+          </p>
+
+          {/* CTA buttons */}
+          <div className="fade-up stagger-4 flex flex-wrap gap-4 mb-12">
+            <a href="#episodes"
+               className="px-7 py-3 font-body text-lg font-semibold rounded transition-all duration-300"
+               style={{ background: 'var(--teal)', color: 'var(--fog)',
+                        boxShadow: '0 4px 20px rgba(42,127,127,0.4)' }}
+               onMouseEnter={e => e.target.style.background = 'var(--teal-light)'}
+               onMouseLeave={e => e.target.style.background = 'var(--teal)'}>
+              Escuchar episodios →
+            </a>
+            <a href="#contact"
+               className="px-7 py-3 font-body text-lg font-semibold rounded transition-all duration-300"
+               style={{ border: '1px solid rgba(200,131,42,0.5)', color: 'var(--amber-light)' }}
+               onMouseEnter={e => { e.target.style.background = 'rgba(200,131,42,0.1)'; }}
+               onMouseLeave={e => { e.target.style.background = 'transparent'; }}>
+              Participar
+            </a>
+          </div>
+
+          {/* Latest episode quick player */}
+          <div className="fade-up stagger-5 p-5 rounded-lg max-w-xl"
+               style={{ background: 'rgba(22,27,34,0.9)', border: '1px solid rgba(42,127,127,0.3)', backdropFilter: 'blur(8px)' }}>
+            <p className="badge mb-2" style={{ color: 'var(--teal-light)' }}>▶ ÚLTIMO EPISODIO</p>
+            <p className="font-display text-lg mb-3" style={{ color: 'var(--fog)' }}>E04 — Pubs, gente y despedida</p>
+            <audio controls className="w-full" style={{ height: '36px' }}>
+              <source src="mi_podcast_e04.mp3" type="audio/mpeg" />
+              Tu navegador no soporta el elemento audio.
+            </audio>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── EPISODE CARD ─── */
+function EpisodeCard({ ep, index }) {
+  const isAmber = ep.color === 'amber';
+  return (
+    <div className="ep-card rounded-xl overflow-hidden"
+         style={{ background: 'var(--slate-800)', animationDelay: `${index * 0.12}s` }}>
+      {/* Image */}
+      <div className="relative overflow-hidden" style={{ height: '200px' }}>
+        <img src={ep.img} alt={ep.title}
+             className="w-full h-full object-cover transition-transform duration-700"
+             style={{ transform: 'scale(1.05)' }}
+             onMouseEnter={e => e.target.style.transform = 'scale(1.12)'}
+             onMouseLeave={e => e.target.style.transform = 'scale(1.05)'}
+        />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(13,17,23,0.1) 0%, rgba(13,17,23,0.75) 100%)' }} />
+        {/* Episode number badge */}
+        <div className="absolute top-3 left-3">
+          <span className="badge px-3 py-1 rounded-full font-bold"
+                style={{ background: isAmber ? 'rgba(200,131,42,0.85)' : 'rgba(42,127,127,0.85)', color: '#fff' }}>
+            {ep.number}
+          </span>
+        </div>
+        <div className="absolute bottom-3 right-3 badge px-2 py-1 rounded"
+             style={{ background: 'rgba(13,17,23,0.8)', color: 'rgba(232,228,223,0.7)' }}>
+          ⏱ {ep.duration}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <p className="badge mb-2" style={{ color: isAmber ? 'var(--amber-light)' : 'var(--teal-light)' }}>
+          {ep.date}
+        </p>
+        <h3 className="font-display font-bold text-xl leading-snug mb-3" style={{ color: 'var(--fog)' }}>
+          {ep.title}
+        </h3>
+        <p className="font-body text-base leading-relaxed mb-4" style={{ color: 'rgba(232,228,223,0.65)', fontSize: '1rem' }}>
+          {ep.description}
+        </p>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {ep.tags.map(t => (
+            <span key={t} className="badge px-2 py-0.5 rounded"
+                  style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(232,228,223,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              {t}
+            </span>
+          ))}
+        </div>
+
+        {/* Audio player */}
+        <audio controls className="w-full">
+          <source src={ep.src} type="audio/mpeg" />
+          Tu navegador no soporta el elemento audio.
+        </audio>
+      </div>
+    </div>
+  );
+}
+
+/* ─── EPISODES SECTION ─── */
+function EpisodesSection() {
+  return (
+    <section id="episodes" className="py-24" style={{ background: 'var(--slate-900)' }}>
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Header */}
+        <div className="mb-16">
+          <p className="badge mb-3" style={{ color: 'var(--teal-light)' }}>✦ TEMPORADA 1</p>
+          <h2 className="font-display font-black mb-4"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', color: 'var(--fog)' }}>
+            Los episodios
+          </h2>
+          <div className="w-16 h-px mb-6" style={{ background: 'var(--amber)' }} />
+          <p className="font-body text-xl max-w-2xl" style={{ color: 'rgba(232,228,223,0.65)', fontSize: '1.15rem' }}>
+            Cuatro capítulos de un viaje que empezó como vacaciones y terminó siendo algo más parecido a una obsesión.
+          </p>
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {episodes.map((ep, i) => <EpisodeCard key={ep.id} ep={ep} index={i} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── PRODUCTION SECTION ─── */
+function ProductionSection() {
+  const [activeTab, setActiveTab] = useState('process');
+  return (
+    <section id="production" className="py-24" style={{ background: 'var(--slate-800)' }}>
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Header */}
+        <div className="mb-12">
+          <p className="badge mb-3" style={{ color: 'var(--amber-light)' }}>✦ DETRÁS DEL MICRÓFONO</p>
+          <h2 className="font-display font-black mb-4"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', color: 'var(--fog)' }}>
+            Proceso de producción
+          </h2>
+          <div className="w-16 h-px mb-6" style={{ background: 'var(--teal)' }} />
+          <p className="font-body text-xl max-w-2xl" style={{ color: 'rgba(232,228,223,0.65)', fontSize: '1.15rem' }}>
+            Desde la grabación cruda hasta el MP3 final: cómo se hace este podcast.
+          </p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-2 mb-10" style={{ borderBottom: '1px solid rgba(42,127,127,0.2)' }}>
+          {[{ id: 'process', label: 'Flujo de trabajo' }, { id: 'tools', label: 'Herramientas' }].map(t => (
+            <button key={t.id} onClick={() => setActiveTab(t.id)}
+                    className="font-body text-base px-5 py-2.5 transition-all duration-200"
+                    style={{
+                      color: activeTab === t.id ? 'var(--amber-light)' : 'rgba(232,228,223,0.5)',
+                      borderBottom: activeTab === t.id ? '2px solid var(--amber)' : '2px solid transparent',
+                      marginBottom: '-1px',
+                    }}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Process timeline */}
+        {activeTab === 'process' && (
+          <div className="relative">
+            {/* Vertical line */}
+            <div className="absolute left-5 top-0 bottom-0 w-px" style={{ background: 'rgba(42,127,127,0.3)' }} />
+            <div className="space-y-8 pl-14">
+              {processSteps.map((s, i) => (
+                <div key={s.step} className="relative fade-up" style={{ animationDelay: `${i * 0.08}s` }}>
+                  {/* Dot */}
+                  <div className="absolute -left-9 top-1 timeline-dot" />
+                  <div className="p-5 rounded-lg" style={{ background: 'var(--slate-700)', border: '1px solid rgba(42,127,127,0.15)' }}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="badge font-bold" style={{ color: 'var(--teal-light)', fontFamily: 'DM Mono' }}>{s.step}</span>
+                      <h3 className="font-display font-bold text-lg" style={{ color: 'var(--fog)' }}>{s.title}</h3>
+                    </div>
+                    <p className="font-body" style={{ color: 'rgba(232,228,223,0.65)', fontSize: '1rem' }}>{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tools grid */}
+        {activeTab === 'tools' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {tools.map((tool, i) => (
+              <div key={tool.name} className="p-5 rounded-lg transition-all duration-300"
+                   style={{ background: 'var(--slate-700)', border: '1px solid rgba(42,127,127,0.2)' }}
+                   onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(200,131,42,0.4)'}
+                   onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(42,127,127,0.2)'}>
+                <div className="text-3xl mb-3">{tool.icon}</div>
+                <h3 className="font-display font-bold text-lg mb-1" style={{ color: 'var(--fog)' }}>{tool.name}</h3>
+                <p className="font-body text-sm" style={{ color: 'rgba(232,228,223,0.55)', fontSize: '0.95rem' }}>{tool.desc}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Pull quote */}
+        <div className="mt-16 p-6 rounded-xl" style={{ background: 'var(--slate-900)', border: '1px solid rgba(200,131,42,0.2)' }}>
+          <div className="pull-quote">
+            <p className="font-display italic text-xl leading-relaxed" style={{ color: 'var(--fog)', fontSize: '1.3rem' }}>
+              "El sonido de la lluvia de Londres en el micrófono no es un error. Es el episodio."
+            </p>
+            <p className="badge mt-3" style={{ color: 'var(--amber-light)' }}>— NOTA DE PRODUCCIÓN, E03</p>
+          </div>
+        </div>
+
+        {/* License */}
+        <div className="mt-10 p-5 rounded-lg flex flex-wrap items-start gap-4"
+             style={{ background: 'rgba(42,127,127,0.08)', border: '1px solid rgba(42,127,127,0.25)' }}>
+          <div className="text-3xl">©</div>
+          <div>
+            <p className="font-display font-bold mb-1" style={{ color: 'var(--teal-light)' }}>Licencia Creative Commons</p>
+            <p className="font-body" style={{ color: 'rgba(232,228,223,0.65)', fontSize: '1rem' }}>
+              Este podcast se publica bajo licencia <strong style={{ color: 'var(--fog)' }}>CC BY-NC-SA 4.0</strong> — Reconocimiento, No Comercial, Compartir Igual. Los audio de fondo provienen de Freesound.org (CC0) y Free Music Archive (CC BY). Las imágenes son de Unsplash (licencia libre).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── CONTACT SECTION ─── */
+function ContactSection() {
+  const [form, setForm] = useState({ name: '', email: '', subject: 'sugerencia', message: '', file: null });
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSent(true);
+    setTimeout(() => setSent(false), 5000);
+    setForm({ name: '', email: '', subject: 'sugerencia', message: '', file: null });
+  };
+
+  return (
+    <section id="contact" className="py-24" style={{ background: 'var(--slate-900)' }}>
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Header */}
+        <div className="mb-16">
+          <p className="badge mb-3" style={{ color: 'var(--teal-light)' }}>✦ ÚNETE</p>
+          <h2 className="font-display font-black mb-4"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', color: 'var(--fog)' }}>
+            Participa
+          </h2>
+          <div className="w-16 h-px mb-6" style={{ background: 'var(--amber)' }} />
+          <p className="font-body text-xl max-w-2xl" style={{ color: 'rgba(232,228,223,0.65)', fontSize: '1.15rem' }}>
+            ¿Tienes una historia sobre Londres? ¿Una sugerencia? ¿Quieres enviar tu propia grabación?
+            Este podcast es también tuyo.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+          {/* Sidebar info */}
+          <div className="lg:col-span-2 space-y-6">
+            {[
+              { icon: '💌', title: 'Sugerencias', desc: 'Propón un tema, un barrio, una historia. Puede que el próximo episodio sea tuyo.' },
+              { icon: '🎙', title: 'Envía tu grabación', desc: 'Cuéntanos tu propia historia de Londres. MP3, WAV, nota de voz — todo vale.' },
+              { icon: '🤝', title: 'Colaboración', desc: '¿Fotógrafo, músico, escritor? Siempre buscamos voces nuevas para la temporada 2.' },
+            ].map(c => (
+              <div key={c.title} className="flex gap-4 p-4 rounded-lg"
+                   style={{ background: 'var(--slate-800)', border: '1px solid rgba(42,127,127,0.15)' }}>
+                <span className="text-2xl mt-0.5">{c.icon}</span>
+                <div>
+                  <p className="font-display font-bold mb-1" style={{ color: 'var(--fog)' }}>{c.title}</p>
+                  <p className="font-body text-sm" style={{ color: 'rgba(232,228,223,0.55)', fontSize: '0.95rem' }}>{c.desc}</p>
+                </div>
+              </div>
+            ))}
+
+            {/* Social links */}
+            <div className="p-4 rounded-lg" style={{ background: 'var(--slate-800)', border: '1px solid rgba(200,131,42,0.2)' }}>
+              <p className="badge mb-3" style={{ color: 'var(--amber-light)' }}>TAMBIÉN NOS ENCUENTRAS EN</p>
+              {['Spotify', 'Apple Podcasts', 'iVoox', 'RSS'].map(p => (
+                <div key={p} className="flex items-center gap-2 py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--teal-light)' }} />
+                  <span className="font-body" style={{ color: 'rgba(232,228,223,0.7)', fontSize: '1rem' }}>{p}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Form */}
+          <div className="lg:col-span-3">
+            <div className="p-8 rounded-xl" style={{ background: 'var(--slate-800)', border: '1px solid rgba(42,127,127,0.2)' }}>
+              {sent ? (
+                <div className="text-center py-12">
+                  <div className="text-5xl mb-4">🍂</div>
+                  <h3 className="font-display text-2xl mb-2" style={{ color: 'var(--amber-light)' }}>¡Mensaje recibido!</h3>
+                  <p className="font-body" style={{ color: 'rgba(232,228,223,0.65)' }}>
+                    Gracias por escribir. Nos pondremos en contacto pronto.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className="badge block mb-1.5" style={{ color: 'var(--teal-light)' }}>NOMBRE</label>
+                      <input type="text" required placeholder="Tu nombre"
+                             value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
+                             className="w-full px-4 py-2.5 rounded font-body text-base" />
+                    </div>
+                    <div>
+                      <label className="badge block mb-1.5" style={{ color: 'var(--teal-light)' }}>EMAIL</label>
+                      <input type="email" required placeholder="tu@email.com"
+                             value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
+                             className="w-full px-4 py-2.5 rounded font-body text-base" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="badge block mb-1.5" style={{ color: 'var(--teal-light)' }}>MOTIVO</label>
+                    <select value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })}
+                            className="w-full px-4 py-2.5 rounded font-body text-base">
+                      <option value="sugerencia">Sugerencia de tema</option>
+                      <option value="grabacion">Enviar grabación</option>
+                      <option value="colaboracion">Propuesta de colaboración</option>
+                      <option value="otro">Otro</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="badge block mb-1.5" style={{ color: 'var(--teal-light)' }}>MENSAJE</label>
+                    <textarea rows={5} required placeholder="Cuéntanos tu historia de Londres..."
+                              value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
+                              className="w-full px-4 py-2.5 rounded font-body text-base resize-none" />
+                  </div>
+
+                  <div>
+                    <label className="badge block mb-1.5" style={{ color: 'var(--teal-light)' }}>GRABACIÓN (OPCIONAL)</label>
+                    <div className="px-4 py-3 rounded text-sm flex items-center gap-3"
+                         style={{ background: 'var(--slate-700)', border: '1px dashed rgba(42,127,127,0.4)', color: 'rgba(232,228,223,0.5)' }}>
+                      <span>🎙</span>
+                      <span className="font-body" style={{ fontSize: '0.95rem' }}>Adjunta tu archivo de audio (MP3, WAV, M4A — máx. 50MB)</span>
+                      <input type="file" accept="audio/*" onChange={e => setForm({ ...form, file: e.target.files[0] })}
+                             className="absolute opacity-0 cursor-pointer w-full h-full inset-0" style={{ position: 'relative' }} />
+                    </div>
+                    {form.file && (
+                      <p className="badge mt-1" style={{ color: 'var(--teal-light)' }}>✓ {form.file.name}</p>
+                    )}
+                  </div>
+
+                  <button type="submit"
+                          className="w-full py-3.5 rounded font-body font-semibold text-lg transition-all duration-300"
+                          style={{ background: 'var(--teal)', color: 'var(--fog)', boxShadow: '0 4px 20px rgba(42,127,127,0.3)' }}
+                          onMouseEnter={e => { e.target.style.background = 'var(--teal-light)'; e.target.style.boxShadow = '0 6px 24px rgba(42,127,127,0.5)'; }}
+                          onMouseLeave={e => { e.target.style.background = 'var(--teal)'; e.target.style.boxShadow = '0 4px 20px rgba(42,127,127,0.3)'; }}>
+                    Enviar mensaje →
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── FOOTER ─── */
+function Footer() {
+  return (
+    <footer className="py-10 px-6" style={{ background: 'var(--slate-800)', borderTop: '1px solid rgba(42,127,127,0.2)' }}>
+      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <p className="font-display text-lg" style={{ color: 'var(--fog)' }}>
+            <span style={{ color: 'var(--amber-light)' }}>London</span> Calling — Podcast
+          </p>
+          <p className="badge mt-1" style={{ color: 'rgba(232,228,223,0.35)' }}>
+            © 2024 · CC BY-NC-SA 4.0 · Hecho con ☕ y lluvia londinense
+          </p>
+        </div>
+        <div className="flex gap-6">
+          {['Inicio', 'Episodios', 'Producción', 'Participa'].map(l => (
+            <a key={l} href={`#${l.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`}
+               className="badge transition-colors duration-200"
+               style={{ color: 'rgba(232,228,223,0.4)' }}
+               onMouseEnter={e => e.target.style.color = 'var(--teal-light)'}
+               onMouseLeave={e => e.target.style.color = 'rgba(232,228,223,0.4)'}>
+              {l}
+            </a>
+          ))}
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ─── APP ─── */
+function App() {
+  const [active, setActive] = useState('home');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'episodes', 'production', 'contact'];
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) {
+          setActive(id);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <>
+      <Nav active={active} setActive={setActive} />
+      <main>
+        <Hero />
+        <EpisodesSection />
+        <ProductionSection />
+        <ContactSection />
+      </main>
+      <Footer />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
