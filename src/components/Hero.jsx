@@ -29,13 +29,13 @@ export default function Hero() {
       <div className="absolute top-40 right-40 opacity-15 text-4xl leaf-float" style={{ animationDelay: '1.5s' }}>🍁</div>
       <div className="absolute top-60 left-16 opacity-10 text-5xl leaf-float" style={{ animationDelay: '3s' }}>🍂</div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 w-full">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-20">
         {/* Intro centrada */}
-        <div className="flex flex-col items-center text-center mb-20">
+        <div className="max-w-3xl">
           {/* Badges */}
           <div className="fade-up stagger-1 flex items-center gap-3 mb-6">
             <span className="badge px-3 py-1 rounded-full bg-amber/20 text-amber-light border border-amber/40">
-              ✦ TEMPORADA 1 — OTOÑO 2024
+              ✦ TEMPORADA 1 — OTOÑO 2025
             </span>
             <span className="badge px-3 py-1 rounded-full bg-teal/20 text-teal-light border border-teal/40">
               4 EPISODIOS
@@ -48,7 +48,7 @@ export default function Hero() {
             style={{ fontSize: 'clamp(3.5rem, 10vw, 7rem)' }}
           >
             London<br />
-            <span className="italic text-amber-light">Calling</span>
+            <span className="italic text-amber-light">Unexpected</span>
           </h1>
 
           {/* Subtitle */}
@@ -56,9 +56,9 @@ export default function Hero() {
             className="fade-up stagger-3 font-body leading-relaxed mb-8 max-w-2xl text-fog/75"
             style={{ fontSize: '1.25rem' }}
           >
-            Un viaje por Londres en el último suspiro del verano, cuando los árboles empiezan a
-            arder y la ciudad huele a lluvia, café y tiempo libre. Cuatro episodios. Una ciudad.
-            Una temporada.
+            Un pequeño podcast donde contamos cómo organizamos nuestro viaje a Londres: qué funcionó,
+            qué no salió como esperábamos y cómo aprendimos a adaptarnos cuando todo cambió. Cuatro días,
+            cuatro episodios y una ciudad llena de sorpresas.
           </p>
 
           {/* CTA buttons */}
@@ -77,23 +77,28 @@ export default function Hero() {
             </a>
           </div>
 
-          {/* Latest episode quick player */}
+          {/* Promo video */}
           <div
-            className="fade-up stagger-5 p-5 rounded-lg w-full max-w-xl"
+            className="fade-up stagger-5 p-6 rounded-lg w-full max-w-3xl mx-auto"
             style={{
               background: 'rgba(22,27,34,0.9)',
               border: '1px solid rgba(42,127,127,0.3)',
               backdropFilter: 'blur(8px)',
             }}
           >
-            <p className="badge mb-2 text-teal-light">▶ ÚLTIMO EPISODIO</p>
+            <p className="badge mb-2 text-teal-light">🎥 VIDEO PROMOCIONAL</p>
             <p className="font-display text-lg mb-3 text-fog">
-              E04 — Pubs, gente y despedida
+              London Unexpected — Trailer oficial
             </p>
-            <audio controls className="w-full" style={{ height: '36px' }}>
-              <source src="mi_podcast_e04.mp3" type="audio/mpeg" />
-              Tu navegador no soporta el elemento audio.
-            </audio>
+
+            <video
+              controls
+              className="w-full rounded-lg shadow-lg"
+              style={{ maxHeight: '420px', objectFit: 'cover' }}
+            >
+              <source src="/videos/podcast-intro.mp4" type="video/mp4" />
+              Tu navegador no soporta el elemento video.
+            </video>
           </div>
         </div>
       </div>

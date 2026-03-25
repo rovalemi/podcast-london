@@ -16,8 +16,8 @@ export default function EpisodesSection() {
           </h2>
           <div className="w-16 h-px mb-6 bg-amber" />
           <p className="font-body max-w-2xl text-fog/65" style={{ fontSize: '1.15rem' }}>
-            Cuatro capítulos de un viaje que empezó como vacaciones y terminó siendo algo más
-            parecido a una obsesión.
+            Cuatro episodios donde contamos cómo organizamos nuestro viaje a Londres, los imprevistos
+            que aparecieron por el camino y lo que aprendimos al adaptarnos sobre la marcha.
           </p>
         </div>
 

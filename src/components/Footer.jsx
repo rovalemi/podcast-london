@@ -15,12 +15,13 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <p className="font-display text-lg text-fog">
-            <span className="text-amber-light">London</span> Calling — Podcast
+            <span className="text-amber-light">London</span> Unexpected — Podcast
           </p>
           <p className="badge mt-1 text-fog/35">
-            © 2024 · CC BY-NC-SA 4.0 · Hecho con ☕ y lluvia londinense
+            © 2024 · CC BY-NC-SA 4.0 · Hecho con ☕, Audacity y mucha ilusión
           </p>
         </div>
+
         <div className="flex gap-6">
           {footerLinks.map((l) => (
             <a

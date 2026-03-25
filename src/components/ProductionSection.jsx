@@ -120,9 +120,9 @@ export default function ProductionSection() {
               className="font-display italic leading-relaxed text-fog"
               style={{ fontSize: '1.3rem' }}
             >
-              "El sonido de la lluvia de Londres en el micrófono no es un error. Es el episodio."
+              "La música de fondo no es relleno: es el ritmo que sostiene cada historia."
             </p>
-            <p className="badge mt-3 text-amber-light">— NOTA DE PRODUCCIÓN, E03</p>
+            <p className="badge mt-3 text-amber-light">— NOTA DE PRODUCCIÓN</p>
           </div>
         </div>
 
