@@ -11,6 +11,15 @@ export const episodes = [
     img: '/images/candem-bus.jpeg',
     color: 'teal',
     src: '/audios/Podcast - Ep 01.mp3',
+    transcription: [
+      "[00:00] Bienvenida al episodio. Explicamos que este es el inicio del podcast y que queremos contar cómo nació la idea del viaje a Londres.",
+      "[00:10] Hablamos de los vídeos del instituto británico que nos despertaron la curiosidad por Cambridge y por conocer Inglaterra más allá de lo típico.",
+      "[00:25] Contamos cómo empezamos a buscar información, ver fotos, investigar barrios y universidades, y cómo eso nos hizo ilusión desde el principio.",
+      "[00:40] Explicamos el momento exacto en que nuestro padre decidió regalarnos el viaje. Comentamos la sorpresa, la emoción y cómo eso cambió todo el plan.",
+      "[01:00] Reflexionamos sobre lo que significaba para nosotros viajar solos por primera vez, organizarlo todo y vivir una experiencia nueva.",
+      "[01:20] Cerramos el episodio explicando que este viaje no fue solo turismo: fue una oportunidad para aprender, equivocarnos y descubrir una ciudad que nos sorprendió más de lo esperado.",
+      "[01:50] Despedida breve y adelanto del episodio 2."
+    ]
   },
   {
     id: 2,
@@ -24,6 +33,14 @@ export const episodes = [
     img: '/images/oxford-stores.jpeg',
     color: 'amber',
     src: '/audios/Podcast - Ep 01.mp3',
+    transcription: [
+      "[00:00] Introducción al proceso de planificación del viaje de cuatro días.",
+      "[00:10] Explicamos cómo buscamos vuelos, horarios y combinaciones económicas.",
+      "[00:25] Hablamos de las tarjetas contactless, Oyster y cómo funciona el transporte en Londres.",
+      "[00:40] Comentamos la búsqueda de alojamiento, zonas recomendadas y trucos para ahorrar.",
+      "[01:00] Explicamos cómo organizamos el itinerario día por día.",
+      "[01:20] Cerramos contando que todo parecía perfecto… hasta que algo inesperado apareció."
+    ]
   },
   {
     id: 3,
@@ -37,6 +54,14 @@ export const episodes = [
     img: '/images/natural-history-museum.jpeg',
     color: 'teal',
     src: '/audios/Podcast - Ep 01.mp3',
+    transcription: [
+      "[00:00] Introducción: cinco días antes del viaje descubrimos la huelga del metro.",
+      "[00:10] Explicamos cómo afectó al itinerario y qué tuvimos que cancelar o mover.",
+      "[00:25] Contamos cómo aprendimos a movernos solo con buses y qué rutas usamos.",
+      "[00:45] Hablamos de la reorganización para visitar Oxford y Cambridge.",
+      "[01:10] Reflexionamos sobre cómo adaptarse fue parte del aprendizaje del viaje.",
+      "[01:40] Cierre del episodio."
+    ]
   },
   {
     id: 4,
@@ -50,54 +75,13 @@ export const episodes = [
     img: '/images/oxford-university.jpeg',
     color: 'amber',
     src: '/audios/Podcast - Ep 01.mp3',
-  },
-]
-
-export const tools = [
-  { name: 'Audacity', desc: 'Edición principal de voz: reducción de ruido, compresión y normalización.', icon: '🎙' },
-  { name: 'Auto Duck', desc: 'Ajuste automático del volumen de la música bajo la voz.', icon: '🦆' },
-  { name: 'CapCut', desc: 'Edición del video promocional y montaje visual.', icon: '🎬' },
-  { name: 'FFmpeg', desc: 'Exportación final a MP3 con metadatos limpios.', icon: '⚡' },
-  { name: 'Micrófono del MacBook', desc: 'Grabación de voz directa usando el micrófono integrado.', icon: '💻' },
-  { name: 'YouTube Audio Library', desc: 'Música libre para fondos suaves y transiciones.', icon: '🎵' },
-  { name: 'Pixabay Music', desc: 'Pistas adicionales libres de derechos para ambiente.', icon: '🎧' },
-  { name: 'Unsplash', desc: 'Imágenes libres usadas en el video promocional.', icon: '📸' },
-]
-
-export const processSteps = [
-  {
-    step: '01',
-    title: 'Guion y estructura',
-    desc: 'Cada episodio parte de un guion ligero: ideas clave, anécdotas y un cierre claro. Conversación natural con una dirección definida.',
-  },
-  {
-    step: '02',
-    title: 'Grabación de voz',
-    desc: 'Grabación directa con el micrófono integrado del MacBook. Formato fuente: WAV 44.1 kHz, 16‑bit para mantener la mayor calidad posible.',
-  },
-  {
-    step: '03',
-    title: 'Edición en Audacity',
-    desc: 'Reducción de ruido (6–12 dB), compresor suave (threshold –18 dB, ratio 3, attack 5 ms, release 200 ms) y normalización a –1 dB para una voz clara y uniforme.',
-  },
-  {
-    step: '04',
-    title: 'Música y ambiente',
-    desc: 'Música libre de YouTube Audio Library y Pixabay Music. Auto Duck reduce la música 12 dB cuando hay voz. Ajustes manuales para equilibrio final.',
-  },
-  {
-    step: '05',
-    title: 'Intro, cierre y mezcla final',
-    desc: 'Integración de la pista de música de fondo con fades suaves y volumen controlado. Ajustes finales para que la voz y la música convivan sin competir.',
-  },
-  {
-    step: '06',
-    title: 'Exportación final',
-    desc: 'Exportación a MP3 desde Audacity usando FFmpeg (160 kbps, 44.1 kHz). Metadatos ID3 y portada. Archivos listos para web.',
-  },
-  {
-    step: '07',
-    title: 'Video promocional',
-    desc: 'Edición del teaser en CapCut usando imágenes propias y fotografías de Unsplash. Música libre y montaje final optimizado para redes.',
-  },
+    transcription: [
+      "[00:00] Introducción al episodio final.",
+      "[00:10] Contamos lo más difícil del viaje: caminar más de lo previsto, orientarse, adaptarse.",
+      "[00:30] Compartimos lo más divertido: anécdotas, momentos inesperados y descubrimientos.",
+      "[00:50] Hablamos de entrar a universidades en jornadas abiertas y cómo nos sorprendió.",
+      "[01:20] Reflexión final sobre lo que nos llevamos del viaje y ganas de volver.",
+      "[01:50] Despedida de la temporada."
+    ]
+  }
 ]
