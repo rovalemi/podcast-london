@@ -2,10 +2,13 @@ export default function Hero() {
   return (
     <section
       id="home"
+      aria-labelledby="hero-title"
       className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20"
     >
-      {/* BG image */}
+      {/* Imagen de fondo decorativa */}
       <div
+        aria-hidden="true"
+        role="presentation"
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage:
@@ -15,8 +18,10 @@ export default function Hero() {
         }}
       />
 
-      {/* Gradient overlay */}
+      {/* Overlay */}
       <div
+        aria-hidden="true"
+        role="presentation"
         className="absolute inset-0"
         style={{
           background:
@@ -24,26 +29,49 @@ export default function Hero() {
         }}
       />
 
-      {/* Decorative leaves */}
-      <div className="absolute top-24 right-12 opacity-20 text-6xl leaf-float" style={{ animationDelay: '0s' }}>🍂</div>
-      <div className="absolute top-40 right-40 opacity-15 text-4xl leaf-float" style={{ animationDelay: '1.5s' }}>🍁</div>
-      <div className="absolute top-60 left-16 opacity-10 text-5xl leaf-float" style={{ animationDelay: '3s' }}>🍂</div>
+      {/* Hojas decorativas */}
+      <div
+        aria-hidden="true"
+        role="presentation"
+        className="absolute top-24 right-12 opacity-40 text-6xl leaf-float"
+        style={{ animationDelay: '0s' }}
+      >
+        🍂
+      </div>
+      <div
+        aria-hidden="true"
+        role="presentation"
+        className="absolute top-40 right-40 opacity-45 text-4xl leaf-float"
+        style={{ animationDelay: '1.5s' }}
+      >
+        🍁
+      </div>
+      <div
+        aria-hidden="true"
+        role="presentation"
+        className="absolute top-60 left-16 opacity-40 text-5xl leaf-float"
+        style={{ animationDelay: '3s' }}
+      >
+        🍂
+      </div>
 
+      {/* Contenido */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-20">
-        {/* Intro centrada */}
         <div className="max-w-3xl">
+
           {/* Badges */}
           <div className="fade-up stagger-1 flex items-center gap-3 mb-6">
-            <span className="badge px-3 py-1 rounded-full bg-amber/20 text-amber-light border border-amber/40">
+            <span className=" px-3 py-1 rounded-full bg-amber/20 text-amber-light border border-amber/40">
               ✦ TEMPORADA 1 — OTOÑO 2025
             </span>
-            <span className="badge px-3 py-1 rounded-full bg-teal/20 text-teal-light border border-teal/40">
+            <span className="px-3 py-1 rounded-full bg-teal/20 text-teal-light border border-teal/40">
               4 EPISODIOS
             </span>
           </div>
 
-          {/* Title */}
+          {/* Título principal */}
           <h1
+            id="hero-title"
             className="fade-up stagger-2 font-display font-black leading-none mb-4 text-fog"
             style={{ fontSize: 'clamp(3.5rem, 10vw, 7rem)' }}
           >
@@ -51,7 +79,7 @@ export default function Hero() {
             <span className="italic text-amber-light">Unexpected</span>
           </h1>
 
-          {/* Subtitle */}
+          {/* Subtítulo */}
           <p
             className="fade-up stagger-3 font-body leading-relaxed mb-8 max-w-2xl text-fog/75"
             style={{ fontSize: '1.25rem' }}
@@ -61,23 +89,23 @@ export default function Hero() {
             cuatro episodios y una ciudad llena de sorpresas.
           </p>
 
-          {/* CTA buttons */}
+          {/* Botones CTA */}
           <div className="fade-up stagger-4 flex flex-wrap justify-center gap-4 mb-12">
             <a
               href="#episodes"
-              className="btn-teal px-7 py-3 font-body text-lg font-semibold rounded"
+              className="btn-teal px-7 py-3 font-body text-lg font-semibold rounded focus-visible:outline focus-visible:outline-amber-light"
             >
               Escuchar episodios →
             </a>
             <a
               href="#contact"
-              className="btn-outline px-7 py-3 font-body text-lg font-semibold rounded"
+              className="btn-outline px-7 py-3 font-body text-lg font-semibold rounded focus-visible:outline focus-visible:outline-amber-light"
             >
               Participar
             </a>
           </div>
 
-          {/* Promo video */}
+          {/* Video promocional */}
           <div
             className="fade-up stagger-5 p-6 rounded-lg w-full max-w-3xl mx-auto"
             style={{
@@ -86,13 +114,14 @@ export default function Hero() {
               backdropFilter: 'blur(8px)',
             }}
           >
-            <p className="badge mb-2 text-teal-light">🎥 VIDEO PROMOCIONAL</p>
+            <p className="mb-2 text-teal-light">🎥 VIDEO PROMOCIONAL</p>
             <p className="font-display text-lg mb-3 text-fog">
               London Unexpected — Trailer oficial
             </p>
 
             <video
               controls
+              aria-label="Vídeo promocional del podcast London Unexpected"
               className="w-full rounded-lg shadow-lg"
               style={{ maxHeight: '420px', objectFit: 'cover' }}
             >

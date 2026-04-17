@@ -188,7 +188,7 @@ audio::-webkit-media-controls-panel { background: var(--slate-700); }
 /* ─── Buttons ─── */
 .btn-teal {
   background: var(--teal);
-  color: var(--fog);
+  color: #ffffff !important;
   box-shadow: 0 4px 20px rgba(42,127,127,0.4);
   transition: background 0.3s, box-shadow 0.3s;
 }
@@ -218,4 +218,93 @@ audio::-webkit-media-controls-panel { background: var(--slate-700); }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ─── ACCESIBILIDAD: Reducción de movimiento ─── */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── ACCESIBILIDAD: Foco visible global ─── */
+:focus-visible {
+  outline: 3px solid var(--amber-light);
+  outline-offset: 3px;
+}
+
+/* ─── CONTRASTE: Override global para TODAS las variantes fog ─── */
+/* Tailwind genera text-fog/xx dinámicamente, así que sobrescribimos TODO */
+
+[class*="text-fog"] {
+  color: rgba(232, 228, 223, 0.92) !important;
+}
+
+/* Variantes específicas que Tailwind genera */
+.text-fog\/95,
+.text-fog\/90,
+.text-fog\/85,
+.text-fog\/80,
+.text-fog\/75,
+.text-fog\/70,
+.text-fog\/65,
+.text-fog\/60,
+.text-fog\/55,
+.text-fog\/50,
+.text-fog\/45,
+.text-fog\/40,
+.text-fog\/35,
+.text-fog\/30,
+.text-fog\/25,
+.text-fog\/20,
+.text-fog\/15,
+.text-fog\/10,
+.text-fog\/5 {
+  color: rgba(232, 228, 223, 0.92) !important;
+}
+
+/* Si hay hijos dentro del elemento */
+.text-fog\/95 *,
+.text-fog\/90 *,
+.text-fog\/85 *,
+.text-fog\/80 *,
+.text-fog\/75 *,
+.text-fog\/70 *,
+.text-fog\/65 *,
+.text-fog\/60 *,
+.text-fog\/55 *,
+.text-fog\/50 *,
+.text-fog\/45 *,
+.text-fog\/40 *,
+.text-fog\/35 *,
+.text-fog\/30 *,
+.text-fog\/25 *,
+.text-fog\/20 *,
+.text-fog\/15 *,
+.text-fog\/10 *,
+.text-fog\/5 * {
+  color: rgba(232, 228, 223, 0.92) !important;
+}
+
+/* ─── CONTRASTE: Inline styles con opacidad baja ─── */
+[style*="rgba(232,228,223"],
+[style*="rgba(232, 228, 223"],
+.file-text {
+  color: rgba(232, 228, 223, 0.92) !important;
+}
+
+/* ─── ACCESIBILIDAD: Foco visible en elementos interactivos ─── */
+.btn-teal:focus-visible,
+.btn-outline:focus-visible,
+.nav-link:focus-visible,
+.footer-link:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--amber-light) !important;
+  outline-offset: 3px;
 }

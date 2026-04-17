@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import InformePDF from "./InformePDF";
 
 const contactItems = [
   {
@@ -40,37 +41,43 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="py-24 bg-slate-900">
+    <section id="contact" aria-labelledby="contact-title" className="py-24 bg-slate-900">
       <div className="max-w-6xl mx-auto px-6">
+
         {/* Header */}
-        <div className="mb-16">
-          <p className="badge mb-3 text-teal-light">✦ ÚNETE</p>
+        <header className="mb-16">
+          <p className="mb-3 text-teal-light">✦ ÚNETE</p>
+
           <h2
+            id="contact-title"
             className="font-display font-black mb-4 text-fog"
             style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)' }}
           >
             Participa
           </h2>
+
           <div className="w-16 h-px mb-6 bg-amber" />
-          <p className="font-body max-w-2xl text-fog/65" style={{ fontSize: '1.15rem' }}>
+
+          <p className="font-body max-w-2xl text-fog/80" style={{ fontSize: '1.15rem' }}>
             ¿Tienes una historia sobre Londres? ¿Una sugerencia? ¿Quieres enviar tu propia
             grabación? Este podcast es también tuyo.
           </p>
-        </div>
+        </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+
           {/* Sidebar */}
-          <div className="lg:col-span-2 space-y-6">
+          <aside className="lg:col-span-2 space-y-6">
             {contactItems.map((c) => (
               <div
                 key={c.title}
                 className="flex gap-4 p-4 rounded-lg bg-slate-800"
                 style={{ border: '1px solid rgba(42,127,127,0.15)' }}
               >
-                <span className="text-2xl mt-0.5">{c.icon}</span>
+                <span aria-hidden="true" className="text-2xl mt-0.5">{c.icon}</span>
                 <div>
                   <p className="font-display font-bold mb-1 text-fog">{c.title}</p>
-                  <p className="font-body text-fog/55" style={{ fontSize: '0.95rem' }}>
+                  <p className="font-body text-fog/80" style={{ fontSize: '0.95rem' }}>
                     {c.desc}
                   </p>
                 </div>
@@ -82,7 +89,8 @@ export default function ContactSection() {
               className="p-4 rounded-lg bg-slate-800"
               style={{ border: '1px solid rgba(200,131,42,0.2)' }}
             >
-              <p className="badge mb-3 text-amber-light">TAMBIÉN NOS ENCUENTRAS EN</p>
+              <p className="mb-3 text-amber-light">TAMBIÉN NOS ENCUENTRAS EN</p>
+
               {platforms.map((p) => (
                 <div
                   key={p}
@@ -90,13 +98,13 @@ export default function ContactSection() {
                   style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-light" />
-                  <span className="font-body text-fog/70" style={{ fontSize: '1rem' }}>
+                  <span className="font-body text-fog/85" style={{ fontSize: '1rem' }}>
                     {p}
                   </span>
                 </div>
               ))}
             </div>
-          </div>
+          </aside>
 
           {/* Form */}
           <div className="lg:col-span-3">
@@ -105,21 +113,26 @@ export default function ContactSection() {
               style={{ border: '1px solid rgba(42,127,127,0.2)' }}
             >
               {sent ? (
-                <div className="text-center py-12">
-                  <div className="text-5xl mb-4">🍂</div>
+                <div className="text-center py-12" aria-live="polite">
+                  <div aria-hidden="true" className="text-5xl mb-4">🍂</div>
                   <h3 className="font-display text-2xl mb-2 text-amber-light">
                     ¡Mensaje recibido!
                   </h3>
-                  <p className="font-body text-fog/65">
+                  <p className="font-body text-fog/80">
                     Gracias por escribir. Nos pondremos en contacto pronto.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
+
+                  {/* Nombre + Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="badge block mb-1.5 text-teal-light">NOMBRE</label>
+                      <label htmlFor="name" className="block mb-1.5 text-teal-light">
+                        NOMBRE
+                      </label>
                       <input
+                        id="name"
                         type="text"
                         required
                         placeholder="Tu nombre"
@@ -128,9 +141,13 @@ export default function ContactSection() {
                         className="form-input w-full px-4 py-2.5 rounded font-body text-base"
                       />
                     </div>
+
                     <div>
-                      <label className="badge block mb-1.5 text-teal-light">EMAIL</label>
+                      <label htmlFor="email" className="block mb-1.5 text-teal-light">
+                        EMAIL
+                      </label>
                       <input
+                        id="email"
                         type="email"
                         required
                         placeholder="tu@email.com"
@@ -141,9 +158,13 @@ export default function ContactSection() {
                     </div>
                   </div>
 
+                  {/* Motivo */}
                   <div>
-                    <label className="badge block mb-1.5 text-teal-light">MOTIVO</label>
+                    <label htmlFor="subject" className="block mb-1.5 text-teal-light">
+                      MOTIVO
+                    </label>
                     <select
+                      id="subject"
                       value={form.subject}
                       onChange={(e) => setForm({ ...form, subject: e.target.value })}
                       className="form-input w-full px-4 py-2.5 rounded font-body text-base"
@@ -155,9 +176,13 @@ export default function ContactSection() {
                     </select>
                   </div>
 
+                  {/* Mensaje */}
                   <div>
-                    <label className="badge block mb-1.5 text-teal-light">MENSAJE</label>
+                    <label htmlFor="message" className="block mb-1.5 text-teal-light">
+                      MENSAJE
+                    </label>
                     <textarea
+                      id="message"
                       rows={5}
                       required
                       placeholder="Cuéntanos tu historia de Londres..."
@@ -167,34 +192,40 @@ export default function ContactSection() {
                     />
                   </div>
 
+                  {/* Archivo */}
                   <div>
-                    <label className="badge block mb-1.5 text-teal-light">
+                    <label htmlFor="file" className="block mb-1.5 text-teal-light">
                       GRABACIÓN (OPCIONAL)
                     </label>
+
                     <div
                       className="px-4 py-3 rounded text-sm flex items-center gap-3 relative"
                       style={{
                         background: 'var(--slate-700)',
                         border: '1px dashed rgba(42,127,127,0.4)',
-                        color: 'rgba(232,228,223,0.5)',
+                        color: 'rgba(232,228,223,0.85)',
                       }}
                     >
-                      <span>🎙</span>
+                      <span aria-hidden="true">🎙</span>
                       <span className="font-body" style={{ fontSize: '0.95rem' }}>
                         Adjunta tu archivo de audio (MP3, WAV, M4A — máx. 50MB)
                       </span>
+
                       <input
+                        id="file"
                         type="file"
                         accept="audio/*"
                         onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
                         className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                       />
                     </div>
+
                     {form.file && (
-                      <p className="badge mt-1 text-teal-light">✓ {form.file.name}</p>
+                      <p className="mt-1 text-teal-light">✓ {form.file.name}</p>
                     )}
                   </div>
 
+                  {/* Submit */}
                   <button
                     type="submit"
                     className="btn-teal w-full py-3.5 rounded font-body font-semibold text-lg"
@@ -205,6 +236,11 @@ export default function ContactSection() {
               )}
             </div>
           </div>
+        </div>
+
+        {/* PDF */}
+        <div className="mt-12 flex justify-center">
+          <InformePDF />
         </div>
       </div>
     </section>
