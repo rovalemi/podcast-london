@@ -14,7 +14,7 @@ export default function ProductionSection() {
       <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
         <div className="mb-12">
-          <p className="badge mb-3 text-amber-light">✦ DETRÁS DEL MICRÓFONO</p>
+          <p className="mb-3 text-amber-light">✦ DETRÁS DEL MICRÓFONO</p>
           <h2
             className="font-display font-black mb-4 text-fog"
             style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)' }}
@@ -72,7 +72,7 @@ export default function ProductionSection() {
                     style={{ border: '1px solid rgba(42,127,127,0.15)' }}
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="badge font-bold font-mono text-teal-light">
+                      <span className="font-bold font-mono text-teal-light">
                         {s.step}
                       </span>
                       <h3 className="font-display font-bold text-lg text-fog">
@@ -122,7 +122,7 @@ export default function ProductionSection() {
             >
               "La música de fondo no es relleno: es el ritmo que sostiene cada historia."
             </p>
-            <p className="badge mt-3 text-amber-light">— NOTA DE PRODUCCIÓN</p>
+            <p className="mt-3 text-amber-light">— NOTA DE PRODUCCIÓN</p>
           </div>
         </div>
 

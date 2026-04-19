@@ -11,13 +11,21 @@ export default function App() {
 
   return (
     <>
-      <Nav active={active} />
-      <main>
+      <a href="#main-content" className="skip-link">
+        Saltar al contenido principal
+      </a>
+      
+      <header>
+        <Nav active={active} />
+      </header>
+
+      <main id="main-content">
         <Hero />
         <EpisodesSection />
         <ProductionSection />
         <ContactSection />
       </main>
+      
       <Footer />
     </>
   )
